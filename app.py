@@ -53,8 +53,9 @@ def get_all_cafes():
 
 
 ## HTTP GET - Read Record
-@app.route('/search/<loc>')
-def get_cafe(loc):
+@app.route('/search')
+def get_cafe():
+    loc = request.args.get('loc')
     result = db.session.execute(db.select(Cafe).where(Cafe.location == loc)).scalars().all()
     if result:
         return jsonify(cafes=[cafe.to_dict() for cafe in result])
