@@ -2,9 +2,11 @@ import random
 
 from flask import Flask, jsonify, render_template, request
 from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv
+from os import getenv
 
 app = Flask(__name__)
-
+load_dotenv()
 ## Connect to Database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cafes.db'
 db = SQLAlchemy()
@@ -117,7 +119,21 @@ def patch_coffee_price(cafe_id):
             return jsonify(error={'Error': 'Check your request'}), 304
     return jsonify(error={'Failure': 'Only PATCH method'}), 304
 
+
 ## HTTP DELETE - Delete Record
+@app.route('/delete/<int:cafe_id>', methods=['DELETE'])
+def delete_cafe(cafe_id):
+    auth = request.form.get('api_key')
+    # APIs should be kept secure in a database
+    # using python-dotenv is just for simplicity
+    if auth == getenv('API_KEY'):
+        cafe_to_delete = db.get_or_404(Cafe, cafe_id)
+        if cafe_to_delete:
+            db.session.delete(cafe_to_delete)
+            db.session.commit()
+            return jsonify(result={'Success': 'Cafe has been deleted'}), 200
+        return jsonify(error={'Error': 'Cafe not found'}), 404
+    return jsonify(error={'Failure': 'Not Authorized'}), 401
 
 
 if __name__ == '__main__':
