@@ -64,7 +64,39 @@ def get_cafe():
             'Not Found': 'No Cafe was found at that location'
         }
     )
+
+
 ## HTTP POST - Create Record
+@app.route('/add', methods=['POST'])
+def add_cafe():
+    cafe_requested = request.form.to_dict()
+    cafe = Cafe(
+        name=cafe_requested['name'],
+        map_url=cafe_requested['map_url'],
+        img_url=cafe_requested['img_url'],
+        location=cafe_requested['location'],
+        seats=cafe_requested['seats'],
+        has_toilet=True if cafe_requested['has_toilet'].lower() == 'true' else False,
+        has_wifi=True if cafe_requested['has_wifi'].lower() == 'true' else False,
+        has_sockets=True if cafe_requested['has_sockets'].lower() == 'true' else False,
+        can_take_calls=True if cafe_requested['can_take_calls'].lower() == 'true' else False,
+        coffee_price=True if cafe_requested['coffee_price'].lower() == 'true' else False,
+    )
+    try:
+        db.session.add(cafe)
+        db.session.commit()
+        return jsonify(
+            result={
+                'Success': 'New Location has been added'
+            }
+        )
+    except Exception:
+        return jsonify(
+            error={
+                'Failed to add new location': 'error on your data'
+            }
+        )
+
 
 ## HTTP PUT/PATCH - Update Record
 
