@@ -109,12 +109,13 @@ def patch_coffee_price(cafe_id):
                 cafe = db.get_or_404(Cafe, cafe_id)
                 cafe.coffee_price = request.args.get('coffee_price')
                 db.session.commit()
+                return jsonify(result={'Success': 'Coffee price has been updated'}), 200
             else:
-                return jsonify(error={'Not a valid price'})
+                return jsonify(error={'Not a valid price'}), 404
         except Exception as e:
             print('[+] Console: ', e)
-            return jsonify(error={'Error': 'Check your request'})
-    return jsonify(error={'Failure': 'Only PATCH method'})
+            return jsonify(error={'Error': 'Check your request'}), 404
+    return jsonify(error={'Failure': 'Only PATCH method'}), 404
 
 ## HTTP DELETE - Delete Record
 
