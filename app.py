@@ -42,6 +42,16 @@ def home():
 def get_random_cafe():
     random_cafe = random.choice(Cafe.query.all())
     return jsonify(Cafe.to_dict(random_cafe))
+
+
+@app.route('/all')
+def get_all_cafes():
+    all_cafes = Cafe.query.all()
+    return jsonify(
+        cafes=[cafe.to_dict() for cafe in all_cafes]
+    )
+
+
 ## HTTP GET - Read Record
 
 ## HTTP POST - Create Record
