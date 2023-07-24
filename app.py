@@ -53,7 +53,16 @@ def get_all_cafes():
 
 
 ## HTTP GET - Read Record
-
+@app.route('/search/<loc>')
+def get_cafe(loc):
+    result = db.session.execute(db.select(Cafe).where(Cafe.location == loc)).scalars().all()
+    if result:
+        return jsonify(cafes=[cafe.to_dict() for cafe in result])
+    return jsonify(
+        error={
+            'Not Found': 'No Cafe was found at that location'
+        }
+    )
 ## HTTP POST - Create Record
 
 ## HTTP PUT/PATCH - Update Record
