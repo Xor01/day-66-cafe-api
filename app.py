@@ -39,17 +39,19 @@ def home():
 def get_random_cafe():
     random_cafe = random.choice(Cafe.query.all())
     return jsonify(
-        id=random_cafe.id,
-        name=random_cafe.name,
-        map_url=random_cafe.map_url,
-        img_url=random_cafe.img_url,
-        location=random_cafe.location,
-        seats=random_cafe.seats,
-        has_toilet=random_cafe.has_toilet,
-        has_wifi=random_cafe.has_wifi,
-        has_sockets=random_cafe.has_sockets,
-        can_take_calls=random_cafe.can_take_calls,
-        coffee_price=random_cafe.coffee_price,
+        cafe={
+            'id': random_cafe.id,
+            'name': random_cafe.name,
+            'map_url': random_cafe.map_url,
+            'img_url': random_cafe.img_url,
+            'location': random_cafe.location,
+            'seats': random_cafe.seats,
+            'has_toilet': random_cafe.has_toilet,
+            'has_wifi': random_cafe.has_wifi,
+            'has_sockets': random_cafe.has_sockets,
+            'can_take_calls': random_cafe.can_take_calls,
+            'coffee_price': random_cafe.coffee_price,
+        }
     )
 ## HTTP GET - Read Record
 
