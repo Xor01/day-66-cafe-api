@@ -41,7 +41,7 @@ def home():
 @app.route('/random')
 def get_random_cafe():
     random_cafe = random.choice(Cafe.query.all())
-    return jsonify(Cafe.to_dict(random_cafe))
+    return jsonify(Cafe.to_dict(random_cafe)), 200
 
 
 @app.route('/all')
@@ -49,7 +49,7 @@ def get_all_cafes():
     all_cafes = Cafe.query.all()
     return jsonify(
         cafes=[cafe.to_dict() for cafe in all_cafes]
-    )
+    ), 200
 
 
 ## HTTP GET - Read Record
@@ -58,12 +58,12 @@ def get_cafe():
     loc = request.args.get('loc')
     result = db.session.execute(db.select(Cafe).where(Cafe.location == loc)).scalars().all()
     if result:
-        return jsonify(cafes=[cafe.to_dict() for cafe in result])
+        return jsonify(cafes=[cafe.to_dict() for cafe in result]), 200
     return jsonify(
         error={
             'Not Found': 'No Cafe was found at that location'
         }
-    )
+    ), 404
 
 
 ## HTTP POST - Create Record
@@ -89,14 +89,14 @@ def add_cafe():
             result={
                 'Success': 'New Location has been added'
             }
-        )
+        ), 201
     except Exception as e:
         print('[+] Console: ', e)
         return jsonify(
             error={
                 'Failed to add new location': 'error on your data'
             }
-        )
+        ), 400
 
 
 ## HTTP PUT/PATCH - Update Record
@@ -111,11 +111,11 @@ def patch_coffee_price(cafe_id):
                 db.session.commit()
                 return jsonify(result={'Success': 'Coffee price has been updated'}), 200
             else:
-                return jsonify(error={'Not a valid price'}), 404
+                return jsonify(error={'Not a valid price'}), 304
         except Exception as e:
             print('[+] Console: ', e)
-            return jsonify(error={'Error': 'Check your request'}), 404
-    return jsonify(error={'Failure': 'Only PATCH method'}), 404
+            return jsonify(error={'Error': 'Check your request'}), 304
+    return jsonify(error={'Failure': 'Only PATCH method'}), 304
 
 ## HTTP DELETE - Delete Record
 
