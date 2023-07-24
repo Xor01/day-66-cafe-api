@@ -90,7 +90,8 @@ def add_cafe():
                 'Success': 'New Location has been added'
             }
         )
-    except Exception:
+    except Exception as e:
+        print('[+] Console: ', e)
         return jsonify(
             error={
                 'Failed to add new location': 'error on your data'
@@ -99,6 +100,21 @@ def add_cafe():
 
 
 ## HTTP PUT/PATCH - Update Record
+@app.route('/update-price/<int:cafe_id>', methods=['PATCH'])
+def patch_coffee_price(cafe_id):
+    if request.method == 'PATCH':
+        try:
+            new_coffee_price = request.args.get('coffee_price')
+            if new_coffee_price.isnumeric():
+                cafe = db.get_or_404(Cafe, cafe_id)
+                cafe.coffee_price = request.args.get('coffee_price')
+                db.session.commit()
+            else:
+                return jsonify(error={'Not a valid price'})
+        except Exception as e:
+            print('[+] Console: ', e)
+            return jsonify(error={'Error': 'Check your request'})
+    return jsonify(error={'Failure': 'Only PATCH method'})
 
 ## HTTP DELETE - Delete Record
 
